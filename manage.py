@@ -32,27 +32,45 @@ if args.mode == "install":
 
 class File():
     def __init__(self, install_path, repo_dir):
-        self.install_path = path.abspath(install_path)
-        self.repo_path    = path.abspath(path.join(repo_dir, path.basename(install_path)))
+        self.install_path = install_path
+        self.repo_path    = path.join(repo_dir, path.basename(install_path))
     
     def install(self):
-        backup_path = path.join(backup_dir, self.install_path.lstrip(os.sep))
-        os.makedirs(path.dirname(backup_path), exist_ok=True)
+        if not path.isfile(self.repo_path):
+            print(f"{Fore.YELLOW}{self.repo_path} does not exist!{Style.RESET}")
+            return
 
         installed_is_newer = path.getmtime(self.install_path) > path.getmtime(self.repo_path)
-        color, msg = (Fore.YELLOW, " [installed newer]") if installed_is_newer else (Fore.GREEN, "")
-        print(f"{color}{self.repo_path} => {self.install_path} (Backup: {backup_path}){msg}{Fore.RESET}")
+
+        if installed_is_newer:
+            print(f"{Fore.YELLOW}{self.repo_path} => {self.install_path} [installed file is newer]{Fore.RESET}")
+        elif not path.isfile(self.install_path):
+            print(f"{Fore.GREEN}{self.repo_path} => {self.install_path} [new]{Fore.RESET}")
+        else:
+            print(f"{Fore.GREEN}{self.repo_path} => {self.install_path}{Fore.RESET}")
 
         if (installed_is_newer and not args.force) or args.dry_run:
             return
+
+        backup_path = path.join(backup_dir, self.install_path.lstrip(os.sep))
+        os.makedirs(path.dirname(backup_path), exist_ok=True)
 
         shutil.copyfile(self.install_path, backup_path)
         shutil.copyfile(self.repo_path, self.install_path)
 
     def read(self):
+        if not path.isfile(self.install_path):
+            print(f"{Fore.YELLOW}{self.install_path} does not exist!{Style.RESET}")
+            return
+
         repo_is_newer = path.getmtime(self.repo_path) > path.getmtime(self.install_path)
-        color, msg = (Fore.YELLOW, " [repo newer]") if repo_is_newer else (Fore.GREEN, "")
-        print(f"{color}{self.install_path} => {self.repo_path}{msg}{Fore.RESET}")
+
+        if repo_is_newer:
+            print(f"{Fore.YELLOW}{self.install_path} => {self.repo_path} [repo file is newer]{Fore.RESET}")
+        elif not path.isfile(self.repo_path):
+            print(f"{Fore.GREEN}{self.install_path} => {self.repo_path} [new]{Fore.RESET}")
+        else:
+            print(f"{Fore.GREEN}{self.install_path} => {self.repo_path}{Fore.RESET}")
 
         if (repo_is_newer and not args.force) or args.dry_run:
             return
