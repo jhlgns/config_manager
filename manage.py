@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #
 # TODO:
-#  * Symlink statt cp
-#  * Separate Repo
+#  * Symlink statt cp?
+#  * dos2unix Transformation, um Windows-Dateien auf Linux zu installieren (.vimrc)
 #
 
 import argparse
