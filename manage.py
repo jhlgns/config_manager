@@ -29,7 +29,7 @@ args = parser.parse_args()
 
 backup_dir = None
 if args.mode == "install":
-    home = os.environ["HOME"] if os.name == "linux" else os.environ["USERPROFILE"]
+    home = os.environ["HOME"] if os.name == "posix" else os.environ["USERPROFILE"]
     backup_dir = path.join(home, "Backups", f"config-{time.strftime('%Y-%m-%d_%H-%M-%S')}")
     os.makedirs(backup_dir, exist_ok=True)
     print(f"{Fore.MAGENTA}Backup directory: {backup_dir}{Fore.RESET}")
