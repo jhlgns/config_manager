@@ -61,11 +61,12 @@ class File():
             if (installed_is_newer and not args.force) or args.dry_run:
                 continue
 
-            _, backup_subdir = path.splitdrive(install_path)
-            backup_subdir = backup_subdir.lstrip(os.sep)
-            backup_path = path.join(backup_dir, backup_subdir)
-            os.makedirs(path.dirname(backup_path), exist_ok=True)
-            shutil.copyfile(install_path, backup_path)
+            if path.isfile(install_path):
+                _, backup_subdir = path.splitdrive(install_path)
+                backup_subdir = backup_subdir.lstrip(os.sep)
+                backup_path = path.join(backup_dir, backup_subdir)
+                os.makedirs(path.dirname(backup_path), exist_ok=True)
+                shutil.copyfile(install_path, backup_path)
 
             shutil.copyfile(self.repo_path, install_path)
 
