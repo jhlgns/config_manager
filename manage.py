@@ -23,6 +23,7 @@ parser.add_argument("--repo-dir", required=True)
 parser.add_argument("--dry-run", action="store_const", const=True, default=False, help="It's all just make-believe, right?")
 parser.add_argument("--force", "-f", action="store_const", const=True, default=False)
 parser.add_argument("--push", action="store_const", const=True, default=False, help="git add, git commit, git push")
+parser.add_argument("--pull", action="store_const", const=True, default=False, help="Pull before read")
 parser.add_argument("--message", "-m", help="Git commit message")
 args = parser.parse_args()
 
@@ -120,6 +121,9 @@ if args.mode == "install":
     for file in files:
         file.install()
 elif args.mode == "read":
+    if args.pull:
+        print(f"{Fore.MAGENTA}Pulling current branch{Fore.RESET}")
+        os.system("git pull --recurse-submodules")
     for file in files:
         file.read()
 
