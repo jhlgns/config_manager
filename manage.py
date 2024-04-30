@@ -98,7 +98,8 @@ def expand_path(p):
 files = []
 with open(path.join(args.repo_dir, "files.txt")) as f:
     for line in f:
-        parts = list(map(lambda x: x.strip(), line.split(":")))
+        parts = map(lambda x: x.strip(), line.split(":"))
+        parts = list(filter(lambda x: x.startswith("#") == False, parts))  # Remove comments
         if len(parts) < 2:
             continue
 
